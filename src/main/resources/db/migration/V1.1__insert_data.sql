@@ -1,0 +1,54 @@
+INSERT INTO employee (
+    first_name,
+    last_name,
+    personal_email,
+    corporate_email,
+    hire_date,
+    department,
+    onboarding_status
+) VALUES
+(
+    'Alice',
+    'Johnson',
+    'alice.johnson@example.com',
+    'ajohnson@corp.com',
+    '2023-10-15',
+    'Engineering',
+    'COMPLETED'
+),
+(
+    'Bob',
+    'Smith',
+    'bob.smith@test.net',
+    'bsmith@corp.com',
+    '2024-01-20',
+    'Product Management',
+    'IT_PROVISIONED'
+),
+(
+    'Charlie',
+    'Brown',
+    'charlie.b@test.org',
+    NULL,
+    '2024-05-01',
+    'Marketing',
+    'HR_REVIEWED'
+),
+(
+    'Diana',
+    'Prince',
+    'diana.p@workmail.co',
+    'dprince@corp.com',
+    '2024-09-10',
+    'Human Resources',
+    'PENDING_ONBOARDING'
+),
+(
+    'Ethan',
+    'Hunt',
+    'ethan.h@secret.io',
+    'ehunt@corp.com',
+    '2023-04-25',
+    'Operations',
+    DEFAULT
+);

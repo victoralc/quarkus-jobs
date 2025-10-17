@@ -1,0 +1,16 @@
+<tr id="job-row-{job.name}" hx-ext="ws" ws-connect="ws/jobs/status/{job.name}">
+    <td>
+        <button class="btn btn-primary"
+                hx-post="/jobs/start"
+                hx-target="#job-row-{job.name}"
+                hx-swap="outerHTML"
+                hx-vals='{"jobName": "{job.name}"}'>
+            Start
+        </button>
+    </td>
+    <td>{job.name}</td>
+    <td>{job.executionId}</td>
+    <td>{job.lastStartTime}</td>
+    <td>{job.lastEndTime}</td>
+    <td>{job.status}</td>
+</tr>
