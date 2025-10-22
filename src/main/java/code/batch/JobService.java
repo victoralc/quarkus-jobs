@@ -38,6 +38,7 @@ public class JobService {
     }
 
     public JobExecution start(String jobName) {
-        return null;
+        long jobExecutionId = jobOperator.start(jobName, new Properties());
+        return jobOperator.getJobExecution(jobExecutionId);
     }
 }

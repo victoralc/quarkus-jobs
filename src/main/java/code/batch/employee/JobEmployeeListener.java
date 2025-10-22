@@ -1,5 +1,9 @@
 package code.batch.employee;
 
+import code.batch.Job;
+import code.batch.JobStatusSocket;
+import code.batch.JobsResource;
+import code.batch.util.JobUtil;
 import io.quarkiverse.jberet.runtime.QuarkusJobOperator;
 import io.quarkus.logging.Log;
 import io.quarkus.mailer.Mail;
@@ -30,17 +34,23 @@ public class JobEmployeeListener extends AbstractJobListener {
     @Inject
     Mailer mailer;
 
+    @Inject
+    JobStatusSocket jobStatusSocket;
+
     @Override
     public void afterJob() throws Exception {
         Log.info("executing afterJob...");
-        long executionId = jobContext.getExecutionId();
-        JobExecution jobExecution = quarkusJobOperator.getJobExecution(executionId);
+        JobExecution jobExecution = quarkusJobOperator.getJobExecution(jobContext.getExecutionId());
         if (jobExecution.getBatchStatus().equals(BatchStatus.FAILED)) {
             mailer.send(Mail.withText(
                     "victoralcantara432@gmail.com",
                     "Message test",
                     "Quarkus message job failed"));
         }
+        Job job = JobUtil.mapJob(jobExecution);
+        String render = JobsResource.Templates.jobRow(job).render();
+        Log.info("rendering template " + render);
+        jobStatusSocket.broadcastUpdate(jobExecution.getJobName(), render);
     }
 
     public static String formatDate(Date dateToConvert) {

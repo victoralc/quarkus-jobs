@@ -10,35 +10,31 @@ import java.util.concurrent.ConcurrentHashMap;
 @ApplicationScoped
 @WebSocket(path = "/ws/jobs/status/{jobName}")
 public class JobStatusSocket {
-    // Map to store active connections by job name
-    private static final Map<String, WebSocketConnection> jobConnections = new ConcurrentHashMap<>();
+    private final Map<String, WebSocketConnection> jobConnections = new ConcurrentHashMap<>();
 
-    // Called when a new client connects
-    @OnOpen
+    @OnOpen(broadcast = true)
     public void onOpen(WebSocketConnection connection, @PathParam String jobName) {
-        // Associate the connection with the job name
         jobConnections.put(jobName, connection);
-        Log.info("websocket open...");
+        Log.info("websocket open for " + jobName);
     }
 
-    // Called when a client disconnects
     @OnClose
     public void onClose(WebSocketConnection connection, @PathParam String jobName) {
-        // Remove the connection
         jobConnections.remove(jobName);
-        Log.info("websocket closed...");
+        Log.info("websocket closed for " + jobName);
     }
 
     /**
      * Sends the updated HTML fragment to the client listening for the specified job.
-     * This method is called by the JobService when a status changes.
+     * This method is called by the JobService or Listener.
      */
-    public static void broadcastUpdate(String jobName, String updatedHtml) {
+    public void broadcastUpdate(String jobName, String updatedHtml) {
         WebSocketConnection connection = jobConnections.get(jobName);
         if (connection != null && connection.isOpen()) {
-            // Use the sendText() method on the connection object
-            connection.sendText(updatedHtml);
+            Log.info("sending text broadcast for job: " + jobName);
+            connection.sendTextAndAwait(updatedHtml);
+        } else {
+            Log.warn("No active connection found for job: " + jobName + ". Update failed.");
         }
     }
-
 }

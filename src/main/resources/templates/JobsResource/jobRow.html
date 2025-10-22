@@ -1,16 +1,38 @@
-<tr id="job-row-{job.name}" hx-ext="ws" ws-connect="ws/jobs/status/{job.name}">
+<tr id="job-row-{job.name}" hx-ext="ws" ws-connect="ws/jobs/status/{job.name}" hx-swap="outerHTML">
     <td>
-        <button class="btn btn-primary"
-                hx-post="/jobs/start"
-                hx-target="#job-row-{job.name}"
-                hx-swap="outerHTML"
-                hx-vals='{"jobName": "{job.name}"}'>
-            Start
-        </button>
+        <div class="d-grid gap-2 col-6 mx-auto">
+            <button class="btn btn-primary btn-sm "
+                    hx-post="/jobs/start"
+                    hx-target="#job-row-{job.name}"
+                    hx-vals='{"jobName": "{job.name}"}'
+                    {#if job.status == 'STARTED'}disabled{/if}>
+                {#if job.status == 'STARTED'}Running...{#else}Start{/if}
+            </button>
+        </div>
     </td>
     <td>{job.name}</td>
     <td>{job.executionId}</td>
     <td>{job.lastStartTime}</td>
     <td>{job.lastEndTime}</td>
-    <td>{job.status}</td>
+
+    <td>
+        {#if job.status == 'COMPLETED'}
+        <div class="alert alert-success p-1 m-0 text-center" role="alert">
+            Completed
+        </div>
+        {#else if job.status == 'FAILED'}
+        <div class="alert alert-danger p-1 m-0 text-center" role="alert">
+            Failed
+        </div>
+        {#else if job.status == 'STARTED'}
+        <div class="alert alert-primary p-1 m-0 text-center" role="alert">
+            <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            Started
+        </div>
+        {#else}
+        {job.status}
+        {/if}
+    </td>
 </tr>

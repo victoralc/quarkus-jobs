@@ -1,8 +1,6 @@
 package code.batch.employee;
 
-import io.quarkus.logging.Log;
 import jakarta.batch.api.AbstractBatchlet;
-import jakarta.batch.runtime.BatchStatus;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -21,7 +19,16 @@ public class UpdateEmployeeBatchlet extends AbstractBatchlet {
     @Override
     @Transactional
     public String process() throws Exception {
-        Log.info("throwing exception...");
-        throw new RuntimeException();
+        Thread.sleep(Duration.ofSeconds(20));
+        List<Employee> employees = employeeRepository.listAll();
+        employees.forEach(e -> {
+            String firstName = e.getFirstName();
+            String lastName = e.getLastName();
+            String corporateEmail = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@company.com";
+            e.setCorporateEmail(corporateEmail);
+            e.setOnboardingStatus(Employee.Status.HR_REVIEWED);
+        });
+        employeeRepository.persist(employees);
+        return "COMPLETED";
     }
 }

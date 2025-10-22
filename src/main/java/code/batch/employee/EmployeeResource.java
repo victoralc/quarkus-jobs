@@ -56,14 +56,4 @@ public class EmployeeResource {
         JobExecution jobExecution = jobOperator.getJobExecution(executionId);
         return Response.ok(jobExecution.getBatchStatus()).build();
     }
-
-    @Inject
-    Scheduler scheduler;
-
-    @GET
-    @Path("/job/schedule")
-    public Response schedule() {
-        scheduler.schedule();
-        return Response.ok("job scheduled").build();
-    }
 }
