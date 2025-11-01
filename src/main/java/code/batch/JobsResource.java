@@ -9,6 +9,7 @@ import jakarta.batch.runtime.JobExecution;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
+import org.quartz.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -57,4 +58,13 @@ public class JobsResource {
         public static native TemplateInstance jobRow(Job job);
     }
 
+    @Inject
+    Scheduler scheduler;
+
+    @GET
+    @Path("/scheduled")
+    public List<String> getJobDetails() throws SchedulerException {
+        List<? extends Trigger> simpleScheduledJob = scheduler.getTriggersOfJob(JobKey.jobKey("SimpleScheduledJob"));
+        return List.of();
+    }
 }

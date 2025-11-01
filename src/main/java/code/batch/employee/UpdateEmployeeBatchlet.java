@@ -1,6 +1,7 @@
 package code.batch.employee;
 
 import jakarta.batch.api.AbstractBatchlet;
+import jakarta.batch.runtime.context.JobContext;
 import jakarta.enterprise.context.Dependent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -16,19 +17,27 @@ public class UpdateEmployeeBatchlet extends AbstractBatchlet {
     @Inject
     EmployeeRepository employeeRepository;
 
+    @Inject
+    JobContext jobContext;
+
     @Override
     @Transactional
     public String process() throws Exception {
-        Thread.sleep(Duration.ofSeconds(20));
-        List<Employee> employees = employeeRepository.listAll();
-        employees.forEach(e -> {
-            String firstName = e.getFirstName();
-            String lastName = e.getLastName();
-            String corporateEmail = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@company.com";
-            e.setCorporateEmail(corporateEmail);
-            e.setOnboardingStatus(Employee.Status.HR_REVIEWED);
-        });
-        employeeRepository.persist(employees);
-        return "COMPLETED";
+        try {
+            throw new RuntimeException("error during employee job update...");
+        } catch (RuntimeException e) {
+            jobContext.setTransientUserData(e);
+            throw e;
+        }
+//        List<Employee> employees = employeeRepository.listAll();
+//        employees.forEach(e -> {
+//            String firstName = e.getFirstName();
+//            String lastName = e.getLastName();
+//            String corporateEmail = firstName.toLowerCase() + "." + lastName.toLowerCase() + "@company.com";
+//            e.setCorporateEmail(corporateEmail);
+//            e.setOnboardingStatus(Employee.Status.HR_REVIEWED);
+//        });
+//        employeeRepository.persist(employees);
+//        return "COMPLETED";
     }
 }
