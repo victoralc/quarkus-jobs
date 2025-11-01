@@ -10,10 +10,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Path("/jobs")
 public class JobsResource {
@@ -62,9 +62,30 @@ public class JobsResource {
     Scheduler scheduler;
 
     @GET
-    @Path("/scheduled")
-    public List<String> getJobDetails() throws SchedulerException {
-        List<? extends Trigger> simpleScheduledJob = scheduler.getTriggersOfJob(JobKey.jobKey("SimpleScheduledJob"));
-        return List.of();
+    @Path("/details")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Map<String, Object>> getFailedJobDetails() throws SchedulerException {
+        List<Map<String, Object>> jobs = new ArrayList<>();
+
+        for (String groupName : scheduler.getJobGroupNames()) {
+            Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.jobGroupEquals(groupName));
+            for (JobKey jobKey : jobKeys) {
+                JobDetail detail = scheduler.getJobDetail(jobKey);
+                String status = detail.getJobDataMap().getString("LastExecutionStatus");
+                Map<String, Object> jobData = new HashMap<>();
+                jobData.put("name", jobKey.getName());
+                jobData.put("jobClass", detail.getJobClass().getName());
+                jobData.put("status", status);
+                jobData.put("time", detail.getJobDataMap().getString("LastExecutionTime"));
+
+                Map<String, String> lastFailure = new HashMap<>();
+                lastFailure.put("message", detail.getJobDataMap().getString("LastFailureMessage"));
+                lastFailure.put("stackTrace", detail.getJobDataMap().getString("LastFailureStackTrace"));
+                jobData.put("lastFailure", lastFailure);
+
+                jobs.add(jobData);
+            }
+        }
+        return jobs;
     }
 }

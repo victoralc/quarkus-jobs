@@ -1,14 +1,14 @@
 package code.batch.scheduled;
 
-import io.quarkus.scheduler.Scheduled;
+import io.quarkus.logging.Log;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.transaction.Transactional;
+import org.quartz.Job;
+import org.quartz.JobExecutionContext;
 
 @ApplicationScoped
-public class SimpleScheduledJob {
-    @Transactional
-    @Scheduled(every = "10s", identity = "SimpleScheduledJob")
-    public void execute() {
-        throw new RuntimeException("Error during SimpleScheduledJob execution");
+public class SimpleScheduledJob implements Job {
+    @Override
+    public void execute(JobExecutionContext jobExecutionContext) {
+        Log.info("Executing SimpleScheduledJob");
     }
 }
