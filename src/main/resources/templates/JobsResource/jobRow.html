@@ -1,38 +1,49 @@
 <tr id="job-row-{job.name}" hx-ext="ws" ws-connect="ws/jobs/status/{job.name}" hx-swap="outerHTML">
     <td>
-        <div class="d-grid gap-2 col-6 mx-auto">
-            <button class="btn btn-primary btn-sm "
-                    hx-post="/jobs/start"
-                    hx-target="#job-row-{job.name}"
-                    hx-vals='{"jobName": "{job.name}"}'
-                    {#if job.status == 'STARTED'}disabled{/if}>
-                {#if job.status == 'STARTED'}Running...{#else}Start{/if}
-            </button>
+        <button class="btn btn-icon-play"
+                hx-post="/jobs/start"
+                hx-target="#job-row-{job.name}"
+                hx-vals='{"jobName": "{job.name}"}'
+                title="{#if job.lastRunStatus == 'STARTED'}Running...{#else}Start Job{/if}"
+                {#if job.lastRunStatus == 'STARTED'}disabled{/if}>
+            <i class="bi bi-play-fill"></i>
+        </button>
+    </td>
+    <td>
+        <div class="form-check form-switch">
+            <input class="form-check-input toggle-switch"
+                   type="checkbox"
+                   id="switch-{job.name}"
+                   {#if job.active}checked{/if}
+                   data-job-name="{job.name}"
+                   onclick="confirmToggle(event, '{job.name}', this.checked)">
         </div>
     </td>
     <td>{job.name}</td>
-    <td>{job.executionId}</td>
-    <td>{job.lastStartTime}</td>
-    <td>{job.lastEndTime}</td>
-
+    <td>{job.description}</td>
     <td>
-        {#if job.status == 'COMPLETED'}
-        <div class="alert alert-success p-1 m-0 text-center" role="alert">
-            Completed
-        </div>
-        {#else if job.status == 'FAILED'}
-        <div class="alert alert-danger p-1 m-0 text-center" role="alert">
-            Failed
-        </div>
-        {#else if job.status == 'STARTED'}
-        <div class="alert alert-primary p-1 m-0 text-center" role="alert">
-            <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            Started
-        </div>
+        {#if job.lastStartTime == 'N/A'}
+            <span class="date-text">-</span>
         {#else}
-        {job.status}
+            <span class="date-text">{job.lastStartTime}</span>
+        {/if}
+    </td>
+    <td>
+        {#if job.nextRunTime == 'N/A'}
+            <span class="date-text">-</span>
+        {#else}
+            <span class="date-text">{job.nextRunTime}</span>
+        {/if}
+    </td>
+    <td>
+        {#if job.lastRunStatus == 'COMPLETED'}
+            <div class="alert alert-success alert-status">Completed</div>
+        {#else if job.lastRunStatus == 'FAILED'}
+            <div class="alert alert-danger alert-status">Failed</div>
+        {#else if job.lastRunStatus == 'STARTED'}
+            <div class="alert alert-primary alert-status">Running</div>
+        {#else}
+            <div class="alert alert-secondary alert-status">Pending</div>
         {/if}
     </td>
 </tr>

@@ -1,4 +1,5 @@
 INSERT INTO employee (
+    id,
     first_name,
     last_name,
     personal_email,
@@ -8,6 +9,7 @@ INSERT INTO employee (
     onboarding_status
 ) VALUES
 (
+ 1,
     'Alice',
     'Johnson',
     'alice.johnson@example.com',
@@ -17,6 +19,7 @@ INSERT INTO employee (
     'COMPLETED'
 ),
 (
+ 2,
     'Bob',
     'Smith',
     'bob.smith@test.net',
@@ -26,6 +29,7 @@ INSERT INTO employee (
     'IT_PROVISIONED'
 ),
 (
+ 3,
     'Charlie',
     'Brown',
     'charlie.b@test.org',
@@ -35,6 +39,7 @@ INSERT INTO employee (
     'HR_REVIEWED'
 ),
 (
+ 4,
     'Diana',
     'Prince',
     'diana.p@workmail.co',
@@ -44,6 +49,7 @@ INSERT INTO employee (
     'PENDING_ONBOARDING'
 ),
 (
+ 5,
     'Ethan',
     'Hunt',
     'ethan.h@secret.io',

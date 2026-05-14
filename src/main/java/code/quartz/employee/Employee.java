@@ -1,4 +1,4 @@
-package code.batch.employee;
+package code.quartz.employee;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;

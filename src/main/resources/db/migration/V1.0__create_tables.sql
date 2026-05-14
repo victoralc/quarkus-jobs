@@ -1,7 +1,7 @@
 
 -- 2. Create the employee table
 CREATE TABLE IF NOT EXISTS employee (
-    id SERIAL PRIMARY KEY,
+    id BIGINT PRIMARY KEY,
     first_name VARCHAR(255) NOT NULL,
     last_name VARCHAR(255) NOT NULL,
     personal_email VARCHAR(255) NOT NULL UNIQUE,
